@@ -12,15 +12,47 @@
 {:+ {
      ;; The app tag is kind of like global scope. You assign behaviors that affect
      ;; all of Light Table here
-     :app [(:lt.objs.style/set-skin "dark")]
+     :app [(:lt.objs.style/set-skin "dark")
+           :lt.objs.deploy/check-version
+           (:lt.objs.sidebar.workspace/workspace.open-on-start)
+           (:lt.objs.app/run-on-init [:window.fullscreen
+                                      ])
+           (:lt.plugins.vim/map-keys {"0" "^"
+                                      "-" "$"
+                                      "<BS>" "<PageUp>"
+                                      "<Space>" "<PageDown>"
+                                      "j" "gj"
+                                      "k" "gk"
+                                      ",/" ":ltexec find.clear"})
+           (:lt.objs.files/file.ignore-pattern "(^\\..*)|\\.class$|target/|svn|cvs|\\.git|\\.pyc|~|\\.swp|\\.jar|.DS_Store|_site/|_cache/|__pycache__")
+           ;; :lt.objs.intro/show-new-file ; this would just take up tab space, easy with command / keystroke (cmd-n)
+
+           ]
 
      ;; The editor tag is applied to all editors
      :editor [:lt.objs.editor/no-wrap
-              (:lt.objs.style/set-theme "default")]
+              (:lt.objs.style/set-theme "default")
+              (:lt.objs.style/font-settings "Meslo LG M DZ" 13)
+              :lt.plugins.vim/activate-vim
+              :lt.objs.editor/hide-line-numbers ; cmd-l for going to a line
+              :lt.objs.editor/highlight-current-line
+              :lt.plugins.auto-complete/auto-show-on-input
+              :lt.objs.editor.file/remove-trailing-whitespace
+              :lt.objs.editor.file/last-char-newline
+              (:lt.objs.instarepl/start-content "")
+              ]
 
-     ;; Here we can add behaviors to just clojure editors
-     :editor.clojure [(:lt.objs.langs.clj/print-length 1000)]}
+     :editor.clj.instarepl [:lt.plugins.rainbow-parens/rainbow-parens
+                            (:lt.objs.langs.clj/print-length 1000)
+                            :lt.objs.langs.clj/highlight-comment-forms]
+
+     :editor.cljs [:lt.plugins.rainbow-parens/rainbow-parens]
+
+     :editor.markdown [:lt.objs.editor/wrap]
+     :editor.plaintext [:lt.objs.editor/wrap]
+     :editor.python [(:lt.objs.style/set-theme "tomorrow-night")]
+     }
 
  ;; You can use the subtract key to remove behavior that may get added by
  ;; another diff
- :- {:app []}}
+ :- {:app [:lt.objs.intro/show-intro]}}
